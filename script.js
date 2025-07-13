@@ -1,26 +1,57 @@
-const equipos = [
-  "Barcelona SC", "Emelec", "LDU Quito", "Independiente del Valle", 
-  "Aucas", "El Nacional", "Delfín", "Orense", "Cumbayá", "Deportivo Cuenca", 
-  "Mushuc Runa", "Macará", "Técnico Universitario", "Libertad FC"
-];
+const equipos = {
+  "Barcelona SC": "barcelona",
+  "Emelec": "emelec",
+  "LDU Quito": "ldu",
+  "Independiente del Valle": "idv",
+  "Aucas": "aucas",
+  "El Nacional": "nacional",
+  "Delfín": "delfin",
+  "Orense": "orense",
+  "Cumbayá": "cumbaya",
+  "Deportivo Cuenca": "cuenca",
+  "Mushuc Runa": "mushuc",
+  "Macará": "macara",
+  "Técnico Universitario": "tecnico",
+  "Libertad FC": "libertad"
+};
 
 const select1 = document.getElementById("equipo1");
 const select2 = document.getElementById("equipo2");
+const img1 = document.getElementById("img1");
+const img2 = document.getElementById("img2");
 const resultado = document.getElementById("resultado");
 
-// Cargar equipos
-equipos.forEach(equipo => {
-  const opt1 = document.createElement("option");
-  opt1.text = equipo;
-  opt1.value = equipo;
+Object.keys(equipos).forEach(nombre => {
+  const option1 = document.createElement("option");
+  option1.textContent = nombre;
+  option1.value = nombre;
 
-  const opt2 = opt1.cloneNode(true);
-  
-  select1.add(opt1);
-  select2.add(opt2);
+  const option2 = option1.cloneNode(true);
+
+  select1.appendChild(option1);
+  select2.appendChild(option2);
 });
 
-// Predicción falsa (lógica inicial)
+select1.addEventListener("change", () => {
+  if (select1.value === select2.value) {
+    alert("No puedes seleccionar el mismo equipo en ambos lados.");
+    select1.selectedIndex = 0;
+    img1.src = "";
+    return;
+  }
+  img1.src = `assets/${equipos[select1.value]}.png`;
+});
+
+select2.addEventListener("change", () => {
+  if (select2.value === select1.value) {
+    alert("No puedes seleccionar el mismo equipo en ambos lados.");
+    select2.selectedIndex = 0;
+    img2.src = "";
+    return;
+  }
+  img2.src = `assets/${equipos[select2.value]}.png`;
+});
+
 document.getElementById("predecirBtn").addEventListener("click", () => {
   const eq1 = select1.value;
   const eq2 = select2.value;
@@ -30,7 +61,6 @@ document.getElementById("predecirBtn").addEventListener("click", () => {
     return;
   }
 
-  // Simular predicción (puedes cambiarlo por ML o API)
   const ganador = Math.random() > 0.5 ? eq1 : eq2;
-  resultado.textContent = `🏆 ¡Ganador probable: ${ganador}!`;
+  resultado.innerHTML = `<span class="animado">🏆 ¡Ganador probable: ${ganador}!</span>`;
 });
