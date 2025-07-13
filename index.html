@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Predicción LigaPro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>⚽ Predicción LigaPro Serie A</h1>
+    <p>¡Elige dos equipos y descubre quién ganará!</p>
+  </header>
+
+  <main>
+    <section class="selector">
+      <div>
+        <label for="equipo1">Equipo 1:</label>
+        <select id="equipo1">
+          <option disabled selected>Selecciona un equipo</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="equipo2">Equipo 2:</label>
+        <select id="equipo2">
+          <option disabled selected>Selecciona un equipo</option>
+        </select>
+      </div>
+
+      <button id="predecirBtn">Predecir Ganador</button>
+    </section>
+
+    <section class="resultado" id="resultado">
+      <!-- Aquí se mostrará el resultado -->
+    </section>
+  </main>
+
+  <footer>
+    <p>Desarrollado con ❤️ - LigaPro Predictor 2025</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
