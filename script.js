@@ -21,6 +21,7 @@ const img1 = document.getElementById("img1");
 const img2 = document.getElementById("img2");
 const resultado = document.getElementById("resultado");
 
+// Cargar opciones en los selects
 Object.keys(equipos).forEach(nombre => {
   const option1 = document.createElement("option");
   option1.textContent = nombre;
@@ -32,26 +33,29 @@ Object.keys(equipos).forEach(nombre => {
   select2.appendChild(option2);
 });
 
+// Evento: cambio equipo 1
 select1.addEventListener("change", () => {
   if (select1.value === select2.value) {
     alert("No puedes seleccionar el mismo equipo en ambos lados.");
     select1.selectedIndex = 0;
-    img1.src = "";
+    img1.src = "assets/placeholder.png";
     return;
   }
   img1.src = `assets/${equipos[select1.value]}.png`;
 });
 
+// Evento: cambio equipo 2
 select2.addEventListener("change", () => {
   if (select2.value === select1.value) {
     alert("No puedes seleccionar el mismo equipo en ambos lados.");
     select2.selectedIndex = 0;
-    img2.src = "";
+    img2.src = "assets/placeholder.png";
     return;
   }
   img2.src = `assets/${equipos[select2.value]}.png`;
 });
 
+// Predicción aleatoria
 document.getElementById("predecirBtn").addEventListener("click", () => {
   const eq1 = select1.value;
   const eq2 = select2.value;
