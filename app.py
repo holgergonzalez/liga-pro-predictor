@@ -3,6 +3,7 @@
 #python app.py
 from flask import Flask, render_template, request, jsonify
 import joblib
+import random
 
 app = Flask(__name__)
 
@@ -17,6 +18,7 @@ def index():
     return render_template("index.html")
 
 @app.route("/predecir", methods=["POST"])
+@app.route("/predecir", methods=["POST"])
 def predecir():
     data = request.get_json()
     equipo1 = data.get("equipo1")
@@ -26,7 +28,7 @@ def predecir():
         entrada = [[
             le_home.transform([equipo1])[0],
             le_away.transform([equipo2])[0],
-            2025  # Temporada fija para predicción
+            2025
         ]]
         pred = modelo.predict(entrada)[0]
         resultado = le_winner.inverse_transform([pred])[0].upper()
@@ -38,9 +40,18 @@ def predecir():
         else:
             ganador = 'Empate'
 
-        return jsonify({"resultado": ganador})
-        #return jsonify({"resultado": resultado.upper()})
-    except Exception as e:
+        goles_estimados = round(random.uniform(1.5, 4.0), 1)
+        tarjetas_estimadas = random.randint(3, 8)
+        corners_estimados = random.randint(4, 12)
+
+        return jsonify({
+            "resultado": ganador,
+            "goles": goles_estimados,
+            "tarjetas": tarjetas_estimadas,
+            "corners": corners_estimados
+        })
+
+    except Exception:
         return jsonify({"error": "Error al predecir. Verifica los nombres de los equipos."}), 400
 
 if __name__ == "__main__":

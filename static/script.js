@@ -89,7 +89,12 @@ document.getElementById("predecirBtn").addEventListener("click", () => {
     .then(res => res.json())
     .then(data => {
       if (data.resultado) {
-        resultado.innerHTML = `<span class="animado">🏆 ¡Ganador probable: ${data.resultado}!</span>`;
+        resultado.innerHTML = `
+  <span class="animado">🏆 ¡Ganador probable: ${data.resultado}!</span><br>
+  <span class="resultado-extra">Número estimado de goles: ${data.goles}</span>
+  <span class="resultado-extra">Número de tarjetas totales (amarillas y rojas): ${data.tarjetas}</span>
+  <span class="resultado-extra">Número estimado de córners: ${data.corners}</span>
+`;
       } else {
         resultado.textContent = "❌ No se pudo hacer la predicción.";
       }

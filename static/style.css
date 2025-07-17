@@ -19,10 +19,17 @@ header {
   padding: 2rem;
 }
 
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+/* Estilo resaltado para el título principal */
+header h1 {
+  border: 3px solid white;         /* Borde blanco */
+  display: inline-block;           /* Ajuste al tamaño del texto */
+  padding: 0.5rem 1.5rem;          /* Espaciado interno */
+  color: black;                    /* Letras negras */
+  background-color: white;         /* Fondo blanco */
+  border-radius: 10px;             /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra opcional para resalte */
 }
+
 
 .grid-container {
   display: grid;
@@ -107,4 +114,10 @@ footer {
   margin-top: 3rem;
   background-color: rgba(255, 255, 255, 0.1);
   padding: 1rem;
+}
+.resultado-extra {
+  font-size: 1rem;
+  font-weight: normal;
+  display: block;
+  margin-top: 0.3rem;
 }
