@@ -1,3 +1,6 @@
+#pip install flask joblib
+#pip install scikit-learn
+#python app.py
 from flask import Flask, render_template, request, jsonify
 import joblib
 
