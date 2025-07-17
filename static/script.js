@@ -1,6 +1,6 @@
 const equipos = {
   "Aucas": "aucas",
-  "Barcelona SC": "barcelona",
+  "Barcelona SC": "Barcelona_SC",
   "CD Olmedo": "olmedo",
   "Clan Juvenil": "juvenil",
   "Cuniburo": "cumbi",
