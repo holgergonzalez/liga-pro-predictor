@@ -1,17 +1,17 @@
-#pip install flask joblib
-#pip install scikit-learn
-#python app.py
 from flask import Flask, render_template, request, jsonify
 import joblib
 import random
+import pandas as pd
+from modelo_prediccion import predecir_partido_final
 
 app = Flask(__name__)
 
 # Cargar el modelo y encoders
-modelo = joblib.load("modelo_entrenado.pkl")
-le_home = joblib.load("le_home.pkl")
-le_away = joblib.load("le_away.pkl")
-le_winner = joblib.load("le_winner.pkl")
+modelo = joblib.load("modelo_clasificacion.pkl")
+regresores = joblib.load("regresores.pkl")
+scaler = joblib.load("scaler.pkl")
+label_encoders = joblib.load("label_encoders.pkl")
+data = pd.read_excel("dataset_final_merged.xlsx", sheet_name="Sheet1")
 
 @app.route("/")
 def index():
@@ -20,39 +20,28 @@ def index():
 @app.route("/predecir", methods=["POST"])
 @app.route("/predecir", methods=["POST"])
 def predecir():
-    data = request.get_json()
-    equipo1 = data.get("equipo1")
-    equipo2 = data.get("equipo2")
+    datos = request.json
+    home_team = datos.get("home_team")
+    away_team = datos.get("away_team")
+    season_actual = datos.get("season", 2020)  # Por defecto 2020
 
     try:
-        entrada = [[
-            le_home.transform([equipo1])[0],
-            le_away.transform([equipo2])[0],
-            2025
-        ]]
-        pred = modelo.predict(entrada)[0]
-        resultado = le_winner.inverse_transform([pred])[0].upper()
-
-        if resultado == 'HOME':
-            ganador = equipo1
-        elif resultado == 'AWAY':
-            ganador = equipo2
-        else:
-            ganador = 'Empate'
-
-        goles_estimados = round(random.uniform(1.5, 4.0), 1)
-        tarjetas_estimadas = random.randint(3, 8)
-        corners_estimados = random.randint(4, 12)
-
-        return jsonify({
-            "resultado": ganador,
-            "goles": goles_estimados,
-            "tarjetas": tarjetas_estimadas,
-            "corners": corners_estimados
-        })
-
-    except Exception:
-        return jsonify({"error": "Error al predecir. Verifica los nombres de los equipos."}), 400
+        resultado = predecir_partido_final(
+            home_team=home_team,
+            away_team=away_team,
+            season_actual=season_actual,
+            clf_model=modelo,
+            scalador=scaler,
+            regresores_dict=regresores,
+            label_encs=label_encoders,
+            datos=data
+        )
+        return jsonify(resultado)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+#pip install flask joblib pandas 
+#python app.py

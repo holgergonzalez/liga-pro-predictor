@@ -16,7 +16,7 @@ const equipos = {
   "Imbabura": "Imbabura",
   "Independiente del Valle": "idv",
   "LDU de Quito": "ldu",
-  "LDU Loja": "Liga_de_Loja",  
+  "LDU Loja": "Liga_de_Loja",
   "LDU Portoviejo": "Logo_LDUP_Oficial",
   "Libertad": "libertad",
   "Macará": "macara",
@@ -29,25 +29,21 @@ const equipos = {
   "Cumbayá": "cumbaya"
 };
 
-
-
 const select1 = document.getElementById("equipo1");
 const select2 = document.getElementById("equipo2");
 const img1 = document.getElementById("img1");
 const img2 = document.getElementById("img2");
 const resultado = document.getElementById("resultado");
 
-// Cargar equipos en los selects
+// Cargar equipos
 Object.keys(equipos).forEach(nombre => {
-  const option1 = document.createElement("option");
-  option1.textContent = nombre;
-  option1.value = nombre;
-  const option2 = option1.cloneNode(true);
+  const option1 = new Option(nombre, nombre);
+  const option2 = new Option(nombre, nombre);
   select1.appendChild(option1);
   select2.appendChild(option2);
 });
 
-// Imagen equipo 1
+// Cambiar imagen equipo 1
 select1.addEventListener("change", () => {
   if (select1.value === select2.value) {
     alert("No puedes seleccionar el mismo equipo.");
@@ -58,7 +54,7 @@ select1.addEventListener("change", () => {
   img1.src = `/static/assets/${equipos[select1.value]}.png`;
 });
 
-// Imagen equipo 2
+// Cambiar imagen equipo 2
 select2.addEventListener("change", () => {
   if (select2.value === select1.value) {
     alert("No puedes seleccionar el mismo equipo.");
@@ -69,13 +65,14 @@ select2.addEventListener("change", () => {
   img2.src = `/static/assets/${equipos[select2.value]}.png`;
 });
 
-// Predicción real (con modelo en Flask)
+// Botón de predicción
 document.getElementById("predecirBtn").addEventListener("click", () => {
   const eq1 = select1.value;
   const eq2 = select2.value;
+  const temporada = 2020; // Puedes cambiar esto si usas input de temporada
 
   if (!eq1 || !eq2 || eq1 === eq2) {
-    resultado.textContent = "Selecciona dos equipos distintos.";
+    resultado.textContent = "⚠️ Selecciona dos equipos distintos.";
     return;
   }
 
@@ -84,20 +81,29 @@ document.getElementById("predecirBtn").addEventListener("click", () => {
   fetch("/predecir", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ equipo1: eq1, equipo2: eq2 })
+    body: JSON.stringify({ home_team: eq1, away_team: eq2, season: temporada })
   })
     .then(res => res.json())
     .then(data => {
-      if (data.resultado) {
-        resultado.innerHTML = `
-  <span class="animado">🏆 ¡Ganador probable: ${data.resultado}!</span><br>
-  <span class="resultado-extra">Número estimado de goles: ${data.goles}</span>
-  <span class="resultado-extra">Número de tarjetas totales (amarillas y rojas): ${data.tarjetas}</span>
-  <span class="resultado-extra">Número estimado de córners: ${data.corners}</span>
-`;
-      } else {
-        resultado.textContent = "❌ No se pudo hacer la predicción.";
+      if (data.error) {
+        resultado.textContent = "❌ Error: " + data.error;
+        return;
       }
+
+      if (data.resultado_modelo === "D") {
+        resultado.innerHTML = `🤝 <strong>Empate detectado</strong> entre ${eq1} y ${eq2}.<br> No se generan estadísticas adicionales.`;
+        return;
+      }
+
+      const ganador = data.resultado_modelo === "H" ? `${eq1}` : `${eq2}`;
+
+      resultado.innerHTML = `
+        <strong>Resultado estimado(GANADOR):</strong> ${ganador}<br>
+        <strong>Goles:</strong> ${eq1} ${data.home_goals} - ${data.away_goals} ${eq2}<br>
+        <strong>Amarillas:</strong> ${data.yellow_cards}<br>
+        <strong>Rojas:</strong> ${data.red_cards}<br>
+        <strong>Corners:</strong> ${data.corners}
+      `;
     })
     .catch(() => {
       resultado.textContent = "❌ Error al contactar con el servidor.";
