@@ -45,3 +45,8 @@ if __name__ == "__main__":
 
 #pip install flask joblib pandas 
 #python app.py
+
+## EN EL TERMINAL
+#python -m pip install flask joblib pandas
+#python -m pip install openpyxl
+#python app.py
